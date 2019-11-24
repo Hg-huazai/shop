@@ -1,0 +1,20 @@
+@import "./normalize.css";  
+
+/* :root ->获取根元素html */
+
+:root {
+  /* 定义变量 */
+  --color-text: #666;
+  --color-high-text: #ff5777;
+  /* 定义变量 */
+  --large-size: 50px;
+  
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  
+  /*引用变量 */
+  font-size: var(--large-size);  
+}
