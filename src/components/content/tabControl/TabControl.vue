@@ -29,6 +29,7 @@ export default {
   methods: {
     itemClick(index){    //itemClick监听点击
       this.currentIndex = index;
+      this.$emit('tabClick',index)   //子传父
     }
   }
 }

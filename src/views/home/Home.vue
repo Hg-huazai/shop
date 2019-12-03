@@ -8,50 +8,10 @@
     <!--推荐-->
     <recommend-view :recommends="recommends"></recommend-view>
     <feature-view></feature-view>
-    <tab-control class="tab-control" :titles="['流行','新款','精选']"></tab-control>
-    <div>1</div>
-    <div>1</div>
-    <div>1</div>
-    <div>1</div>
-    <div>1</div>
-    <div>1</div>
-    <div>1</div>
-    <div>1</div>
-
-    <div>1</div>
-    <div>1</div>
-    <div>1</div>
-    <div>1</div>
-    <div>1</div>
-    <div>1</div>
-    <div>1</div>
-    <div>1</div>
-    <div>1</div>
-    <div>1</div>
-    <div>1</div>
-    <div>1</div>
-    <div>1</div>
-
-    <div>1</div>
-    <div>1</div>
-    <div>1</div>
-    <div>1</div>
-    <div>1</div>
-    <div>1</div>
-    <div>1</div>
-    <div>1</div>
-    <div>1</div>
-    <div>1</div>
-    <div>1</div>
-    <div>1</div>
-
-    <div>1</div>
-    <div>1</div>
-    <div>1</div>
-    <div>1</div>
-    <div>1</div>
-
-
+    <tab-control class="tab-control" :titles="['流行','新款','精选']" @tabClick="tabClick"></tab-control>
+    <!--<goods-list :goods="goods[currentType].list"/>     因为名字太长了，所以要搞个计算属性-->
+    <goods-list :goods="showGoods"/>
+    
   </div>
 </template>
 
@@ -63,10 +23,11 @@
   import FeatureView from './childComps/FeatureView'
 
   import NavBar from 'common/navbar/NavBar'
-  import TabControl from 'common/tabControl/TabControl'
+  import TabControl from 'content/tabControl/TabControl'
+  import GoodsList from 'content/goods/GoodsList'
 
 
-  import {getHomeMultidata} from 'network/home'
+  import {getHomeMultidata,getHomeGoods} from 'network/home'
 
 
   export default {
@@ -77,24 +38,80 @@
     FeatureView,
 
     NavBar,
-    TabControl
+    TabControl,
+    GoodsList
   },
   data() {  
     // 保存数据
     return {
       // result: null      //用浏览器的vue插件检查     数据太多了
       banners: [],
-      recommends: []
+      recommends: [],
+      goods: {
+        'pop': {page: 0, list: []},
+        'new': {page: 0, list: []},
+        'sell': {page: 0, list: []}
+      },
+      currentType: 'pop'
+    }
+  },
+  computed: {
+    showGoods(){
+      // return goods[currentType].list     要加this
+      return this.goods[this.currentType].list
+
     }
   },
   created() {     //创建后
     //1.请求多个数据
-    getHomeMultidata().then(res => {
+    this.getHomeMultidata()
+
+    //2.请求商品数据
+    this.getHomeGoods('pop')
+    this.getHomeGoods('new')
+    this.getHomeGoods('sell')
+
+  },
+  methods: {
+    /*
+    *事件监听
+    */
+    tabClick(index) {
+      console.log(index);
+      switch (index) {
+        case 0:
+          this.currentType = 'pop'
+          break
+        case 1:
+          this.currentType = 'new'
+          break
+        case 2: 
+          this.currentType = 'sell'
+          break
+      }
+    },
+
+    /*
+    *网络请求
+    */
+    //1.请求多个数据
+    getHomeMultidata() {
+      getHomeMultidata().then(res => {
       console.log(res);
       // this.result = res;
       this.banners = res.data.banner.list;     //直接拿到里面的数据，多余的不要，要看请求回来的结构
       this.recommends = res.data.recommend.list;
     })
+    },
+    //2.请求商品数据
+    getHomeGoods(type) {
+      const page = this.goods[type].page + 1
+      getHomeGoods(type,page).then(res => {
+      console.log(res);
+      this.goods[type].list.push(...res.data.list)   //把加载的数据追加到list里面
+      this.goods[type].page += 1     //追加后要加页码
+    })
+    }
   }
 }
 </script>
@@ -115,5 +132,6 @@
 .tab-control {
   position: sticky;
   top: 44px;
+  z-index: 9;
 }
 </style>
