@@ -3,14 +3,19 @@
     <nav-bar class="nav-bar">
       <div slot="center">购物街</div>
     </nav-bar>
-     <!--轮播图-->
-    <home-swiper :banners="banners"></home-swiper>
+     
+    <scroll class="content" ref="scroll">
+    <!--轮播图--> 
+      <home-swiper :banners="banners"></home-swiper>
     <!--推荐-->
-    <recommend-view :recommends="recommends"></recommend-view>
-    <feature-view></feature-view>
-    <tab-control class="tab-control" :titles="['流行','新款','精选']" @tabClick="tabClick"></tab-control>
-    <!--<goods-list :goods="goods[currentType].list"/>     因为名字太长了，所以要搞个计算属性-->
-    <goods-list :goods="showGoods"/>
+      <recommend-view :recommends="recommends"></recommend-view>
+      <feature-view></feature-view>
+      <tab-control class="tab-control" :titles="['流行','新款','精选']" @tabClick="tabClick"></tab-control>
+      <!--<goods-list :goods="goods[currentType].list"/>     因为名字太长了，所以要搞个计算属性-->
+      <goods-list :goods="showGoods"/>
+    </scroll>
+    <back-top @click.native="backClick"></back-top>
+
     
   </div>
 </template>
@@ -25,6 +30,8 @@
   import NavBar from 'common/navbar/NavBar'
   import TabControl from 'content/tabControl/TabControl'
   import GoodsList from 'content/goods/GoodsList'
+  import Scroll from 'common/scroll/Scroll'
+  import BackTop from 'content/backtop/BackTop'
 
 
   import {getHomeMultidata,getHomeGoods} from 'network/home'
@@ -39,7 +46,9 @@
 
     NavBar,
     TabControl,
-    GoodsList
+    GoodsList,
+    Scroll,
+    BackTop
   },
   data() {  
     // 保存数据
@@ -90,6 +99,11 @@
           break
       }
     },
+    backClick(){
+      // this.$refs.scroll.scroll.scrollTo(0,0,500)
+      this.$refs.scroll.scrollTo(0,0,500)
+    },
+
 
     /*
     *网络请求
@@ -116,9 +130,9 @@
 }
 </script>
 
-<style>
+<style scoped>     
 #home {
-  padding-top: 44px;
+  height: 100vh;
 }
 .nav-bar {
   background-color: var(--color-tint);
@@ -133,5 +147,14 @@
   position: sticky;
   top: 44px;
   z-index: 9;
+}
+.content {
+  
+  overflow: hidden; 
+  position: absolute;
+  top: 44px;
+  bottom: 49px;
+  left: 0;
+  right: 0;
 }
 </style>
