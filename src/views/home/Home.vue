@@ -4,7 +4,7 @@
       <div slot="center">购物街</div>
     </nav-bar>
      
-    <scroll class="content" ref="scroll">
+    <scroll class="content" ref="scroll" :probe-type="3" @scroll="clickscroll">
     <!--轮播图--> 
       <home-swiper :banners="banners"></home-swiper>
     <!--推荐-->
@@ -102,6 +102,9 @@
     backClick(){
       // this.$refs.scroll.scroll.scrollTo(0,0,500)
       this.$refs.scroll.scrollTo(0,0,500)
+    },
+    clickscroll(position){
+      console.log(position);
     },
 
 
